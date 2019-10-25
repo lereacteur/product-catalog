@@ -5,22 +5,22 @@ const Product = require("../models/Product");
 const Department = require("../models/Department");
 const Category = require("../models/Category");
 
-// CATEGORY ###############################################################
-
-// READ
+// READ ###############################################################
 router.get("/category", async (req, res) => {
-  let allCat = await Category.find();
+  let allCat = await Category.find().populate("department");
   res.json(allCat);
 });
 
-// CREATE
+// CREATE ###############################################################
 router.post("/category/create", async (req, res) => {
   let title = req.body.title;
   let description = req.body.description;
+  let departmentId = req.body.department;
   try {
     const newCategory = new Category({
       title: title,
-      description: description
+      description: description,
+      department: departmentId
     });
 
     await newCategory.save();
@@ -31,11 +31,12 @@ router.post("/category/create", async (req, res) => {
   }
 });
 
-// UPDATE
+// UPDATE ###############################################################
 router.post("/category/update", async (req, res) => {
   let id = req.query.id;
   let title = req.body.title;
   let description = req.body.description;
+  let departmentId = req.body.department;
   let catToUpdate = await Category.findById(id);
   if (title) {
     catToUpdate.title = title;
@@ -43,16 +44,37 @@ router.post("/category/update", async (req, res) => {
   if (description) {
     catToUpdate.description = description;
   }
+  if (departmentId) {
+    catToUpdate.department = departmentId;
+  }
   await catToUpdate.save();
   res.json(catToUpdate);
 });
 
-// DELETE
+// DELETE ###############################################################
+
 router.post("/category/delete", async (req, res) => {
   let id = req.query.id;
   let catToDelete = await Category.findById(id);
-  await catToDelete.remove();
-  res.json({ message: "Category removed" });
+
+  if (catToDelete) {
+    // suppression de la categorie
+    catToDelete.remove();
+
+    // supprimer aussi les produits
+    const products = await Product.find({
+      category: req.query.id
+    });
+    for (let i = 0; i < products.length; i++) {
+      await products[i].remove();
+    }
+
+    res.json({ message: "Category removed" });
+  } else {
+    res.status(400).json({
+      message: "Category not found"
+    });
+  }
 });
 
 module.exports = router;

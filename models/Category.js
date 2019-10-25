@@ -8,6 +8,10 @@ const Category = mongoose.model("Category", {
   description: {
     type: String,
     default: ""
+  },
+  department: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Department"
   }
 });
 

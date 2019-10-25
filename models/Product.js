@@ -11,6 +11,10 @@ const Product = mongoose.model("Product", {
   },
   price: {
     type: Number
+  },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category"
   }
 });
 

@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 
 app.use(bodyParser.json());
 
-mongoose.connect("mongodb://localhost/catalog_v1", {
+mongoose.connect("mongodb://localhost/catalog_v2", {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
