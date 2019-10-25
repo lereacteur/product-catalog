@@ -4,6 +4,8 @@ const router = express.Router();
 const Product = require("../models/Product");
 const Department = require("../models/Department");
 const Category = require("../models/Category");
+const User = require("../models/User");
+const Review = require("../models/Review");
 
 // READ ########################################
 
